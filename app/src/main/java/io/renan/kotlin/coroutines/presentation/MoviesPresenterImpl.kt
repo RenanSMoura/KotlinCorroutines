@@ -1,14 +1,13 @@
 package io.renan.kotlin.coroutines.presentation
 
 import io.renan.kotlin.coroutines.domain.repository.MovieRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class MoviesPresenterImpl(private val movieRepository: MovieRepository) : MoviesPresenter,
     CoroutineScope {
 
+    private val parentJob = SupervisorJob()
     private lateinit var moviesView: MoviesView
 
     override fun setView(moviesView: MoviesView) {
@@ -26,10 +25,14 @@ class MoviesPresenterImpl(private val movieRepository: MovieRepository) : Movies
         }
     }
 
+    override fun stop() {
+        coroutineContext.cancelChildren()
+    }
+
     private fun handleError(throwable: Throwable) {
         moviesView.showError(throwable)
     }
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
+        get() = Dispatchers.Main + parentJob
 }
