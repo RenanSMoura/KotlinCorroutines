@@ -13,19 +13,18 @@ import io.renan.kotlin.coroutines.data.model.Movie
 @Database(entities = [Movie::class], version = 1)
 abstract class MovieDatabase : RoomDatabase() {
 
-  abstract fun movieDao(): MovieDao
+    abstract fun movieDao(): MovieDao
 
-  companion object {
+    companion object {
 
-    fun create(context: Context): MovieDatabase {
+        fun create(context: Context): MovieDatabase {
 
-      return Room.databaseBuilder(
-          context,
-          MovieDatabase::class.java,
-          "movies"
-      )
-          .allowMainThreadQueries()
-          .build()
+            return Room.databaseBuilder(
+                context,
+                MovieDatabase::class.java,
+                "movies"
+            )
+                .build()
+        }
     }
-  }
 }
