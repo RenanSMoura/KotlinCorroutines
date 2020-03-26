@@ -21,7 +21,6 @@ class MoviesPresenterImpl(private val movieRepository: MovieRepository) : Movies
 
     override fun getData() {
         launch {
-
             logCoroutines("getData", coroutineContext)
             val result = runCatching { movieRepository.getMovies() }
 
