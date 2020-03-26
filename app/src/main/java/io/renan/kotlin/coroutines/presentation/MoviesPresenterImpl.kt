@@ -7,6 +7,10 @@ import kotlin.coroutines.CoroutineContext
 class MoviesPresenterImpl(private val movieRepository: MovieRepository) : MoviesPresenter,
     CoroutineScope {
 
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { coroutineContext, throwable ->
+
+        }
     private val parentJob = SupervisorJob()
     private lateinit var moviesView: MoviesView
 
@@ -16,11 +20,12 @@ class MoviesPresenterImpl(private val movieRepository: MovieRepository) : Movies
 
     override fun getData() {
         launch {
-            val result = movieRepository.getMovies()
-            if (result.value != null && result.value.isNotEmpty()) {
-                moviesView.showMovies(result.value)
-            } else if (result.throwable != null) {
-                handleError(result.throwable)
+            val result = runCatching { movieRepository.getMovies() }
+
+            result.onSuccess {
+                moviesView.showMovies(it)
+            }.onFailure {
+                handleError(it)
             }
         }
     }
@@ -34,5 +39,5 @@ class MoviesPresenterImpl(private val movieRepository: MovieRepository) : Movies
     }
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + parentJob
+        get() = Dispatchers.Main + parentJob + coroutineExceptionHandler
 }
