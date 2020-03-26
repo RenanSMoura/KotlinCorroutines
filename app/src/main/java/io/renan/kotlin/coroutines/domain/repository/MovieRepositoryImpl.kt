@@ -6,6 +6,7 @@ import io.renan.kotlin.coroutines.data.database.MovieDao
 import io.renan.kotlin.coroutines.data.model.Movie
 import io.renan.kotlin.coroutines.data.model.Result
 import io.renan.kotlin.coroutines.di.API_KEY
+import io.renan.kotlin.coroutines.utils.logCoroutines
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -21,10 +22,16 @@ class MovieRepositoryImpl(
 
     override suspend fun getMovies(): List<Movie> = withContext(contextProvider.context()) {
 
+        logCoroutines("getMovies", coroutineContext)
+        val cacheMoviesDeferred = async {
+            logCoroutines("getSavedMovies", coroutineContext)
+            movieDao.getSavedMovies()
 
-        throw IllegalAccessException("Ehehueahueaeae")
-        val cacheMoviesDeferred = async { movieDao.getSavedMovies() }
-        val resultDeferred = async { movieApiService.getMovies(API_KEY).execute() }
+        }
+        val resultDeferred = async {
+            logCoroutines("getMoviesApi", coroutineContext)
+            movieApiService.getMovies(API_KEY).execute()
+        }
 
         val cacheMovies = cacheMoviesDeferred.await()
         val apiMovies = resultDeferred.await().body()?.movies

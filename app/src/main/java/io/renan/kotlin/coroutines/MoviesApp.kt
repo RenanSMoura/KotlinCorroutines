@@ -19,6 +19,8 @@ class MoviesApp : Application() {
             modules(listOf(appModule(), networkingModule(), presenterModule()))
         }
 
+        if(BuildConfig.DEBUG) System.setProperty("kotlinx.coroutines.debug","on")
+
     }
 
 

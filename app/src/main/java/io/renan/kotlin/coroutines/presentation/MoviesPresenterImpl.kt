@@ -1,6 +1,7 @@
 package io.renan.kotlin.coroutines.presentation
 
 import io.renan.kotlin.coroutines.domain.repository.MovieRepository
+import io.renan.kotlin.coroutines.utils.logCoroutines
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -20,6 +21,8 @@ class MoviesPresenterImpl(private val movieRepository: MovieRepository) : Movies
 
     override fun getData() {
         launch {
+
+            logCoroutines("getData", coroutineContext)
             val result = runCatching { movieRepository.getMovies() }
 
             result.onSuccess {
