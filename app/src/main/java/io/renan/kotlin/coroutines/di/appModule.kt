@@ -15,7 +15,7 @@ fun appModule() = module {
 
     single { get<MovieDatabase>().movieDao() } // dao
 
-    single { MovieRepositoryImpl(get(), get(), get()) as MovieRepository } // repository
+    single { MovieRepositoryImpl(get(), get()) as MovieRepository } // repository
 
     single { CoroutineContextProviderImpl(Dispatchers.IO) as CoroutineContextProvider }
 }

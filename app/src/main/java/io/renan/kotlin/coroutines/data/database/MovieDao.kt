@@ -14,8 +14,8 @@ import io.renan.kotlin.coroutines.data.model.Movie
 interface MovieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun saveMovies(movies: List<Movie>)
+    suspend fun saveMovies(movies: List<Movie>)
 
     @Query("SELECT * FROM movies")
-    fun getSavedMovies(): List<Movie>
+    suspend fun getSavedMovies(): List<Movie>
 }
